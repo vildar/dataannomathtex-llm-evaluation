@@ -23,8 +23,8 @@ def separate_identifiers_and_formulae(csv_file):
             value = row['Identifier / Formula'].strip()
 
             if is_latex_formula(value):
-                formulae[value] = 0
+                formulae[value] = row['Name'].strip()
             else:
-                identifiers[value] = 0
+                identifiers[value] = row['Name'].strip()
 
     return identifiers, formulae

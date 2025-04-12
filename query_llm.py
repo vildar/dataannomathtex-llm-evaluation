@@ -1,26 +1,57 @@
 import requests
 from utils import separate_identifiers_and_formulae
+import csv
 
 
-def query_llm(formula):
+def save_to_csv(data, filename, recommendations=None):
+    with open(filename, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        # Write headers
+        headers = ["Identifier / Formula", "Name"]
+        if recommendations:
+            headers.extend([f"rank {i}" for i in range(1, 11)])
+        writer.writerow(headers)
+
+        # Write rows
+        for key, value in data.items():
+            row = [key, value]
+            if recommendations and key in recommendations:
+                row.extend(recommendations[key])
+            writer.writerow(row)
+
+
+def process_identifiers_and_formulae(identifiers, formulae):
+    # Separate identifiers and formulae into their respective CSVs
+    save_to_csv(identifiers, 'identifiers.csv')
+    save_to_csv(formulae, 'formulae.csv')
+
+    # Query LLM and store recommendations
+    # identifier_recommendations = {}
+    # formula_recommendations = {}
+
+    # for name, identifier in identifiers.items():
+    #     recommendations = query_llm(identifier)
+    #     ranked_recommendations = extract_recommendations(recommendations)
+    #     identifier_recommendations[name] = ranked_recommendations
+
+    # for formula, name in formulae.items():
+    #     recommendations = query_llm(formula)
+    #     ranked_recommendations = extract_recommendations(recommendations)
+    #     formula_recommendations[formula] = ranked_recommendations
+
+    # # Save recommendations to CSVs
+    # save_to_csv(identifiers, 'identifiers_with_recommendations.csv', identifier_recommendations)
+    # save_to_csv(formulae, 'formulae_with_recommendations.csv', formula_recommendations)
+
+
+def query_llm(input_text):
     url = 'http://localhost:11434/api/generate'
 
     prompt = f"""
-    You are an expert in mathematical annotation recommendation.
+    You are a mathematical formula recommender system. Given a mathematical identifier or formula you provide a list of 10 possible recommendations for formula name. Provide only the 10 names without further explanations. List these recommendations from most likely to least likely.
 
-    Task:
-    Given a mathematical formula or identifier, provide **10 ranked recommendations** for **formula names** from most likely to least likely. 
-    Do not provide explanations of the formula. or additional steps. Just provide the ranked list of formula names or identifiers. 
-    Each recommendation should be a **relevant formula name or identifier**.
-
-    Format your response as follows:
-    1. <Most relevant formula name or identifier>
-    2. <Second most relevant formula name or identifier>
-    ...
-    10. <Least relevant formula name or identifier>
-
-    Formula/Identifier to analyze:
-    {formula}
+    Input:
+    {input_text}
     """
 
     # Set headers and payload for the request
@@ -33,11 +64,16 @@ def query_llm(formula):
         'response', "Sorry, I couldn't generate a response.")
 
 
+def extract_recommendations(response):
+    # Extract the ranked recommendations from the response
+    recommendations = response.split("\n")
+    ranked_recommendations = [line.split(". ", 1)[1].strip()
+                              for line in recommendations if ". " in line]
+    return ranked_recommendations
+
+
 if __name__ == "__main__":
     csv_file = 'cleaned_data.csv'
     identifiers_dict, formulae_dict = separate_identifiers_and_formulae(
         csv_file)
-    # formula = "E = mc^2"
-    # recommendations = query_llm(formula)
-    # print("Recommendations:")
-    # print(recommendations)
+    process_identifiers_and_formulae(identifiers_dict, formulae_dict)
