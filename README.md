@@ -105,6 +105,7 @@ python query_llm.py
 - `data/identifiers.csv`
 - `data/formulae.csv`
 - `data/formulae_with_recommendations.csv`
+- `data/identifiers_with_recommendations.csv`
 
 ## License
 
