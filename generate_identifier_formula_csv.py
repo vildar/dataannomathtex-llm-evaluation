@@ -17,8 +17,8 @@ def save_to_csv(data, filename):
 
 
 if __name__ == "__main__":
-    csv_file = 'cleaned_data.csv'
+    csv_file = 'data/cleaned_data.csv'
     identifiers_dict, formulae_dict = separate_identifiers_and_formulae(
         csv_file)
-    save_to_csv(identifiers_dict, 'identifiers.csv')
-    save_to_csv(formulae_dict, 'formulae.csv')
+    save_to_csv(identifiers_dict, 'data/identifiers.csv')
+    save_to_csv(formulae_dict, 'data/formulae.csv')

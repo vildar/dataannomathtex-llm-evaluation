@@ -54,9 +54,9 @@ def process_recommendations(identifiers_file, formulae_file):
         formula_recommendations[formula] = ranked_recommendations
 
     # Save recommendations to new CSV files
-    # save_to_csv(identifiers, 'identifiers_with_recommendations.csv',
+    # save_to_csv(identifiers, 'data/identifiers_with_recommendations.csv',
     #             identifier_recommendations)
-    save_to_csv(formulae, 'formulae_with_recommendations.csv',
+    save_to_csv(formulae, 'data/formulae_with_recommendations.csv',
                 formula_recommendations)
 
 
@@ -96,4 +96,4 @@ def extract_recommendations(response):
 
 
 if __name__ == "__main__":
-    process_recommendations('identifiers.csv', 'formulae.csv')
+    process_recommendations('data/identifiers.csv', 'data/formulae.csv')
